@@ -1,0 +1,20 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    # không nhất thiết phải map port 3306 ra ngoài máy thật
+    # vì PHPMyAdmin sẽ kết nối nội bộ bên trong Docker.
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    ports:
+      - "8081:80"             # Yêu cầu: Chạy trên cổng 8081
+    environment:
+      PMA_HOST: db            # Quan trọng: Kết nối tới service có tên là 'db' ở trên
+      PMA_PORT: 3306
+    depends_on:
+      - db                    # Đảm bảo mysql chạy trước phpmyadmin

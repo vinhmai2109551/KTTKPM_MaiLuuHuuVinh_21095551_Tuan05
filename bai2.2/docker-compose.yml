@@ -1,0 +1,10 @@
+services:
+  db-mysql:
+    image: mysql:8.0          # Yêu cầu: MySQL phiên bản 8.0
+    environment:              # Thiết lập các biến môi trường theo yêu cầu
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydb    # Yêu cầu: Database là mydb
+      MYSQL_USER: user        # Yêu cầu: Username là user
+      MYSQL_PASSWORD: password # Yêu cầu: Password là password
+    ports:
+      - "3306:3306"           # Map cổng mặc định của MySQL
