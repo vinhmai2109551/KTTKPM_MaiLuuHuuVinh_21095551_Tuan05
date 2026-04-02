@@ -1,0 +1,7 @@
+services:
+  node-app:
+    build: .             # Chỉ định build từ Dockerfile ở thư mục hiện tại
+    ports:
+      - "3000:3000"      # Map cổng 3000 ra ngoài
+    environment:
+      - NODE_ENV=production

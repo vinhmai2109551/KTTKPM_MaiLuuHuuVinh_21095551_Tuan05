@@ -1,0 +1,12 @@
+# Chặn thư mục thư viện Node.js (Rất quan trọng)
+**/node_modules/
+
+# Chặn các thư mục dữ liệu Docker (đã làm bước trước)
+**/db_data/
+**/mysql_data/
+**/nextcloud_data/
+**/es_data/
+**/mongo_data/
+**/prometheus_data/
+**/grafana_data/
+**/*.sock

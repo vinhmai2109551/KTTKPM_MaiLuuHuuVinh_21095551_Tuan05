@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  # 1. Elasticsearch - Bộ não lưu trữ và tìm kiếm
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
+    container_name: es_vinh
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false # Tắt bảo mật để bạn vào thẳng cho nhanh
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" # QUAN TRỌNG: Giới hạn RAM chỉ 512MB
+    volumes:
+      - ./es_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - elk-net
+
+  # 2. Kibana - Giao diện hiển thị
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.10.2
+    container_name: kibana_vinh
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    networks:
+      - elk-net
+
+networks:
+  elk-net:
+    driver: bridge

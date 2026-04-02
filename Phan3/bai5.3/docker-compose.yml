@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # 1. Frontend: App cho người dùng Vote (Python)
+  vote:
+    image: dockersamples/examplevotingapp_vote:latest
+    container_name: vote_app
+    ports:
+      - "5000:80"
+    networks:
+      - front-tier
+      - back-tier
+    depends_on:
+      - redis
+
+  # 2. Redis: Lưu tạm thời các lượt vote (In-memory)
+  redis:
+    image: redis:alpine
+    container_name: redis_vote
+    networks:
+      - back-tier
+
+  # 3. Worker: Chuyển dữ liệu từ Redis sang Postgres (Java)
+  worker:
+    image: dockersamples/examplevotingapp_worker:latest
+    container_name: worker_processor
+    networks:
+      - back-tier
+    depends_on:
+      - redis
+      - db
+
+  # 4. Postgres: Lưu trữ kết quả cuối cùng
+  db:
+    image: postgres:15-alpine
+    container_name: db_vote
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - back-tier
+
+  # 5. Backend: App hiển thị kết quả (Node.js)
+  result:
+    image: dockersamples/examplevotingapp_result:latest
+    container_name: result_app
+    ports:
+      - "5001:80"
+    networks:
+      - front-tier
+      - back-tier
+    depends_on:
+      - db
+
+networks:
+  front-tier:
+  back-tier:
+
+volumes:
+  db-data:

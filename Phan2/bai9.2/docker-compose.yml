@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  web-flask:
+    image: python:3.9-slim
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "5001:5000"  # Ánh xạ port 5001 máy thật vào 5000 của container
+    command: sh -c "pip install -r requirements.txt && python app.py"

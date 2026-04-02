@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  db-mysql-persistent:
+    image: mysql:8.0
+    container_name: mysql_bai10
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: my_secure_db
+    ports:
+      - "3307:3306"
+    volumes:
+      # Gắn thư mục 'mysql_data' ở máy thật vào thư mục chứa data của MySQL trong Docker
+      - ./mysql_data:/var/lib/mysql

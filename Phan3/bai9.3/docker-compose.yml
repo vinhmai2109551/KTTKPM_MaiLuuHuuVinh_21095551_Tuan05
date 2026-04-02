@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # 1. Cơ sở dữ liệu MariaDB
+  db_nextcloud:
+    image: mariadb:10.6
+    container_name: nextcloud_db
+    restart: always
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    volumes:
+      - ./db_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_PASSWORD=nextcloud_pass
+      - MYSQL_DATABASE=nextcloud_db
+      - MYSQL_USER=nextcloud_user
+    networks:
+      - nextcloud_network
+
+  # 2. Redis - Bộ nhớ đệm (Caching)
+  redis_nextcloud:
+    image: redis:alpine
+    container_name: nextcloud_redis
+    restart: always
+    networks:
+      - nextcloud_network
+
+  # 3. Nextcloud App - Giao diện lưu trữ
+  nextcloud_app:
+    image: nextcloud:latest
+    container_name: nextcloud_main
+    restart: always
+    ports:
+      - "8087:80" # Chạy ở port 8087
+    depends_on:
+      - db_nextcloud
+      - redis_nextcloud
+    environment:
+      - MYSQL_PASSWORD=nextcloud_pass
+      - MYSQL_DATABASE=nextcloud_db
+      - MYSQL_USER=nextcloud_user
+      - MYSQL_HOST=db_nextcloud
+      - REDIS_HOST=redis_nextcloud
+    volumes:
+      - ./nextcloud_data:/var/www/html
+    networks:
+      - nextcloud_network
+
+networks:
+  nextcloud_network:
+    driver: bridge

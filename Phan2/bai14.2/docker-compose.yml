@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  # Container 1: Database (Không mở port ra máy thật)
+  db-internal:
+    image: mariadb:10.6
+    container_name: db_private
+    environment:
+      MYSQL_ROOT_PASSWORD: secret_pass
+    networks:
+      - my_private_net
+
+  # Container 2: Công cụ kiểm tra (Chạy Alpine Linux cực nhẹ)
+  tester:
+    image: alpine
+    container_name: tester_private
+    tty: true # Giữ container chạy để mình chui vào test
+    networks:
+      - my_private_net
+
+# Khai báo mạng riêng ở đây
+networks:
+  my_private_net:
+    driver: bridge

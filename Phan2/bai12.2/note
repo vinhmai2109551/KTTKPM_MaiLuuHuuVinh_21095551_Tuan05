@@ -1,0 +1,5 @@
+Node Exporter: Thu thập các thông số từ máy tính của bạn (CPU, RAM, Disk).
+
+Prometheus: Cơ sở dữ liệu lưu trữ các thông số đó theo thời gian.
+
+Grafana: Giao diện biểu đồ cực đẹp để hiển thị dữ liệu từ Prometheus.

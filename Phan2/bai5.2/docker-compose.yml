@@ -1,0 +1,6 @@
+services:
+  my-redis:
+    image: redis:alpine       # Dùng bản alpine cho nhẹ máy
+    ports:
+      - "6379:6379"           # Cổng mặc định của Redis là 6379
+    restart: always           # Tự động khởi động lại nếu bị lỗi

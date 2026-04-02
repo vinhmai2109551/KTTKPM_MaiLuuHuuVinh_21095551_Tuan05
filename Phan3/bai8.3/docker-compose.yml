@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # 1. Redis - Message Broker (Người đưa thư)
+  redis:
+    image: redis:alpine
+    container_name: redis_broker
+    networks:
+      - django-net
+
+  # 2. Django App - Web Interface (Mặt tiền)
+  web:
+    build: ./app
+    container_name: django_app
+    command: tail -f /dev/null
+    tty: true
+    volumes:
+      - ./app:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+    networks:
+      - django-net
+
+  # 3. Celery Worker - Chạy ngầm (Công nhân)
+  worker:
+    build: ./app
+    container_name: celery_worker
+    command: celery -A tasks worker --loglevel=info
+    volumes:
+      - ./app:/app
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+      - web
+    networks:
+      - django-net
+networks:
+  django-net:
+    driver: bridge

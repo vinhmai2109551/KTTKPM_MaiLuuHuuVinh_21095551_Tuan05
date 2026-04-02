@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  redis-limited:
+    image: redis:alpine
+    container_name: redis_bai15
+    ports:
+      - "6379:6379"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'     # Tối đa 50% của 1 nhân CPU
+          memory: 256M     # Tối đa 256MB RAM
+        reservations:
+          memory: 128M     # Luôn dành sẵn ít nhất 128MB cho nó

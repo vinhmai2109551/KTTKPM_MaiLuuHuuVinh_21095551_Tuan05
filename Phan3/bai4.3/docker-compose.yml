@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # 1. Prometheus - Lưu trữ dữ liệu metrics
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus_stack
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus_data:/prometheus # Volume lưu trữ dữ liệu metrics
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    ports:
+      - "9090:9090"
+    networks:
+      - monitor-net
+
+  # 2. Grafana - Hiển thị biểu đồ
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana_stack
+    ports:
+      - "3002:3000"
+    volumes:
+      - ./grafana_data:/var/lib/grafana # Volume lưu trữ cấu hình Dashboard/User
+    depends_on:
+      - prometheus
+    networks:
+      - monitor-net
+
+  # 3. Node Exporter - Thu thập thông số máy thật
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node_exporter_stack
+    ports:
+      - "9101:9100"
+    networks:
+      - monitor-net
+
+networks:
+  monitor-net:
+    driver: bridge
